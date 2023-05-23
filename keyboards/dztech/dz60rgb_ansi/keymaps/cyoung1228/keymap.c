@@ -4,6 +4,8 @@ enum custom_keycodes {
     LGT_OFF = SAFE_RANGE
 };
 
+enum rgb_matrix_effects previous_effect = RGB_MATRIX_GRADIENT_LEFT_RIGHT;
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [0] = LAYOUT_60_ansi(
         KC_ESC,         KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,         KC_EQL,          KC_BSPC,
@@ -21,25 +23,33 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
     [2] = LAYOUT_60_ansi(
         KC_GRV , KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,  KC_DEL,
-        _______, RGB_TOG, KC_UP,   RGB_HUI, RGB_HUD, RGB_SAI, RGB_SAD, RGB_VAI, RGB_VAD, RGB_MOD, _______, _______, _______, QK_BOOT,
-        _______, KC_LEFT, KC_DOWN, KC_RGHT, _______, _______, _______, _______, RGB_SPI, RGB_SPD, _______, _______,          LGT_OFF,
-        _______,          _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,          KC_UP,
+        _______, LGT_OFF, KC_UP,   RGB_HUI, RGB_HUD, RGB_SAI, RGB_SAD, RGB_VAI, RGB_VAD, RGB_MOD, _______, _______, _______, QK_BOOT,
+        _______, KC_LEFT, KC_DOWN, KC_RGHT, _______, _______, _______, _______, RGB_SPI, RGB_SPD, _______, _______,          _______,
+        _______,          _______, _______, _______, _______, _______, NK_TOGG, _______, _______, _______, _______,          KC_UP,
         _______, _______, _______,                            _______,                            _______, KC_LEFT, KC_DOWN, KC_RGHT
     )
 };
 
 void no_light_mode(void) {
-    rgb_matrix_mode(RGB_MATRIX_CUSTOM_no_light);
+    switch(rgb_matrix_get_mode()) {
+        case RGB_MATRIX_CUSTOM_no_light:
+            rgb_matrix_mode(previous_effect);
+            break;
+        default:
+            previous_effect = rgb_matrix_get_mode();
+            rgb_matrix_mode(RGB_MATRIX_CUSTOM_no_light);
+            break;
+    }
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-  switch (keycode) {
-    case LGT_OFF:
-      if (record->event.pressed) {
-        no_light_mode();
-      } 
-      return false; // Skip all further processing of this key
-    default:
-      return true; // Process all other keycodes normally
-  }
+    switch (keycode) {
+        case LGT_OFF:
+            if (record->event.pressed) {
+                no_light_mode();
+            }
+            return false; // Skip all further processing of this key
+        default:
+            return true; // Process all other keycodes normally
+    }
 }
