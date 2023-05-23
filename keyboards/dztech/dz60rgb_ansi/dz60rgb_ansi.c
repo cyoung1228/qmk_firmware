@@ -96,7 +96,7 @@ bool rgb_matrix_indicators_kb(void) {
         return false;
     }
     if (host_keyboard_led_state().caps_lock) {
-        rgb_matrix_set_color(40, 0xFF, 0xFF, 0xFF);
+        rgb_matrix_set_color_all(255, 0, 0);
     }
     return true;
 }
