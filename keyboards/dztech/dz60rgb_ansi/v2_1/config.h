@@ -32,6 +32,9 @@
 /* COL2ROW, ROW2COL*/
 #define DIODE_DIRECTION COL2ROW
 
+/* Mod tap favor hold action on other keypress within tap window */
+#define HOLD_ON_OTHER_KEY_PRESS
+
 #ifdef RGB_MATRIX_ENABLE
 #    define RGB_DISABLE_WHEN_USB_SUSPENDED // turn off effects when suspended
 // #    define RGB_MATRIX_KEYPRESSES
